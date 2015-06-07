@@ -287,28 +287,23 @@ void read_procs()
 
         }
 
+        if (fclose(fstatp))
+            unix_error("fclose()");
     }
 
     if (errno != 0)
         unix_error("readdir()");
+
+    if (closedir(procdirp))
+        unix_error("closedir()");
 }
 
 
 int main(int argc, char *argv[])
 {
-
     read_procs();
-    PROC *proc = find_proc_pid(2158);
-    if (!proc)
-        exit(1);
-
-    DUMP_CHLD_LIST(proc->children);
-
+    dump_tree(root_proc);
     free_procs();
-
-    /* read_procs();
-     * dump_tree(init_proc);
-     * free_procs(); */
 
     return 0;
 }
